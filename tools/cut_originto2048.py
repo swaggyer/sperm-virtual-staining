@@ -1,6 +1,6 @@
 import os
 import cv2
-import shutil
+
 
 # 输入文件夹路径
 input_folder = '/media/seven/WJH/pix2pix/ming1r'

@@ -8,7 +8,7 @@ generator_path = r"superunet2/best_generator.pth"
 # 加载模型
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # generator = ResNetL3(3)# 确保类名正确
-generator = SPPF777_DSUNet(in_channels=3, out_channels=3)
+generator = SPPF777_DSUNet(3, 3)
 generator.load_state_dict(torch.load(generator_path))
 # 直接加载整个模型
 

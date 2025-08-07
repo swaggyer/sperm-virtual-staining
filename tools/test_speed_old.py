@@ -1,9 +1,6 @@
 import os
 import time
-import torch
 from PIL import Image
-# from G_network.DS_multi_skip import *
-# from UNetL4.UNetL4 import *
 import torchvision.transforms as transforms
 from G_network.SPPF_UNet import *
 

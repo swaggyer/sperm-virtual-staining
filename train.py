@@ -2,8 +2,6 @@ import argparse
 import time
 import datetime
 import numpy as np
-import torch
-import torch.nn as nn
 from tqdm.autonotebook import tqdm
 from torchvision.transforms import InterpolationMode
 from torchvision.utils import save_image
@@ -12,7 +10,7 @@ from torch.autograd import Variable
 from G_network.SPPF_UNet import SPPF777_DSUNet
 from dataset import ImageDataset
 from tools.StyleLoss import StyleLoss
-import transforms
+import torchvision.transforms as transforms
 from D_network import *
 import os
 
@@ -92,7 +90,7 @@ def update_best_model(batches_done, current_loss):
 # 模型与损失初始化
 # --------------------------
 # 初始化生成器和判别器
-generator = SPPF777_DSUNet(in_channels=3, out_channels=3)
+generator = SPPF777_DSUNet(3, 3)
 discriminator = Discriminator()
 
 # 设备配置

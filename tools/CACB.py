@@ -1,7 +1,4 @@
-import torch
-import torch.nn as nn
 from attention.SENet import *
-from torchsummary import summary
 
 class CACB_Module(nn.Module):
     def __init__(self,in_ch,out_ch,last :True):

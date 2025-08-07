@@ -21,7 +21,7 @@ results_file = os.path.join(args.output_folder, "speed_results.txt")
 
 # 加载模型
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-generator = SPPF777_DSUNet(in_channels=3, out_channels=3)
+generator = SPPF777_DSUNet(3, 3)
 generator.load_state_dict(torch.load(args.generator_path))
 generator.to(device)
 generator.eval()

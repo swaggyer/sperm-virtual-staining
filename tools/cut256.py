@@ -1,8 +1,5 @@
 import cv2
 
-import cv2
-import numpy as np
-
 # 图像路径
 img_path = '/media/seven/WJH/pix2pix/betterdata/SPPF777_DSUNet_styleloss/14.tif'
 

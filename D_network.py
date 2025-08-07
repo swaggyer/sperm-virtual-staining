@@ -1,5 +1,3 @@
-import torch
-import torch.nn as nn
 from tools.SPPF import *
 from tools.ResidualBlock import *
 from tools.VGGBlock import *

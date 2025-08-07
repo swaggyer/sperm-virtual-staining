@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torchvision.models as models
-import numpy as np
 from torchvision.models.vgg import VGG, VGG16_Weights
 
 class StyleLoss(nn.Module):

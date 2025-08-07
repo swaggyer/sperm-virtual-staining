@@ -1,9 +1,3 @@
-from typing import Union, Callable, Tuple, Any, Optional, Dict
-
-import torch
-import torch.nn as nn
-from torch.nn.modules.module import T
-from torch.utils.hooks import RemovableHandle
 from attention.SENet import *
 
 class SPPF(nn.Module):
