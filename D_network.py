@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
-from localutils.SPPF import *
-from localutils.ResidualBlock import *
-from localutils.VGGBlock import *
+from tools.SPPF import *
+from tools.ResidualBlock import *
+from tools.VGGBlock import *
 
 def weights_init_normal(m):
     if isinstance(m, nn.Conv2d):

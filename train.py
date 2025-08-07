@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from torch.autograd import Variable
 from G_network.SPPF_UNet import SPPF777_DSUNet
 from dataset import ImageDataset
-from localutils.StyleLoss import StyleLoss
+from tools.StyleLoss import StyleLoss
 import transforms
 from D_network import *
 import os
