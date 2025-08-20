@@ -7,12 +7,13 @@ from tqdm.autonotebook import tqdm
 from torch.autograd import Variable
 import argparse
 from G_network.SPPF_UNet import *
+
 # 命令行参数解析
 parser = argparse.ArgumentParser(description='Virtual staining speed evaluation')
 parser.add_argument("--generator_path", type=str, required=True, help="Path to generator model")
 parser.add_argument("--input_folder", type=str, required=True, help="Input image directory")
 parser.add_argument("--output_folder", type=str, required=True, help="Output directory")
-parser.add_argument("--img_size", type=int, nargs=2, default=[2048, 2048], help="Image size [width, height]")
+parser.add_argument("--img_size", type=int, nargs=2, default=[4608, 3456], help="Image size [width, height]")
 args = parser.parse_args()
 
 # 确保输出目录存在
@@ -21,15 +22,21 @@ results_file = os.path.join(args.output_folder, "speed_results.txt")
 
 # 加载模型
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-generator = SPPF777_DSUNet(in_channels=3, out_channels=3)
+generator = SPPF777_DSUNet(3, 3)
 generator.load_state_dict(torch.load(args.generator_path))
 generator.to(device)
 generator.eval()
 
-# 图像预处理
-transform = transforms.Compose([
+# 图像预处理和后处理变换
+preprocess = transforms.Compose([
+    transforms.Resize((256, 256)),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+])
+
+postprocess = transforms.Compose([
+    transforms.ToPILImage(),
+    transforms.Resize((args.img_size[1], args.img_size[0])),  # 注意：PIL使用(height, width)
 ])
 
 # 模型预热
@@ -48,8 +55,8 @@ for filename in tqdm(os.listdir(args.input_folder), desc="Processing images"):
 
         try:
             # 加载并预处理图像
-            image = Image.open(img_path).convert('RGB')
-            tensor_img = transform(image).unsqueeze(0).to(device)
+            orig_image = Image.open(img_path).convert('RGB')
+            tensor_img = preprocess(orig_image).unsqueeze(0).to(device)
 
             # 同步GPU并计时
             torch.cuda.synchronize(device)
@@ -68,10 +75,13 @@ for filename in tqdm(os.listdir(args.input_folder), desc="Processing images"):
             processed_count += 1
 
             # 后处理并保存
-            fake_img = (fake_img + 1) / 2
-            fake_img = fake_img.squeeze(0).permute(1, 2, 0).cpu().numpy()
-            output_path = os.path.join(args.output_folder, filename)
-            Image.fromarray((fake_img * 255).astype('uint8')).save(output_path)
+            fake_img = (fake_img + 1) / 2  # 反归一化 [0,1]
+            fake_img = fake_img.squeeze(0).cpu()  # 移除batch维度并转到CPU
+
+            # 使用后处理变换恢复原始尺寸
+            output_img = postprocess(fake_img)
+            output_path = os.path.join(args.output_folder, f"{filename}_virtual")
+            output_img.save(output_path)
 
             print(f"Processed {filename}: {inference_time:.6f} seconds")
 
@@ -102,6 +112,4 @@ if processed_count > 0:
         f.write(f"Total images processed: {processed_count}\n")
         f.write(f"Average inference time: {avg_time:.6f} seconds\n")
         f.write(f"Network parameters: {total_params}\n")
-        f.write(f"{'=' * 50}\n")
-else:
-    print("No valid images processed")
+        # f.write(f"{'=' * 50}\(f"{'=' * 50}\n")

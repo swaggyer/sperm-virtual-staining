@@ -92,7 +92,7 @@ def update_best_model(batches_done, current_loss):
 # 模型与损失初始化
 # --------------------------
 # 初始化生成器和判别器
-generator = SPPF777_DSUNet(in_channels=3, out_channels=3)
+generator = SPPF777_DSUNet(3, 3)
 discriminator = Discriminator()
 
 # 设备配置
